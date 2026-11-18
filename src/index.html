@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AvatarVault · 改模素材库</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">AV</span>
+      <div class="brand-text">
+        <b>AvatarVault</b>
+        <span>VRChat 改模素材库</span>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon"></span>
+      <input id="search" type="text" placeholder="搜索名称、标签、说明…" autocomplete="off">
+      <button id="searchClear" class="clear" title="清空">×</button>
+    </div>
+
+    <div class="top-actions">
+      <button id="btnAdd" class="btn primary">＋ 添加资产</button>
+      <button id="btnLib" class="btn">库 ▾</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar">
+      <div class="side-title">类目 <button id="btnAddCat" class="mini-btn" title="新建类目">＋</button></div>
+      <nav id="cats" class="cats"></nav>
+
+      <div class="side-title coll-title">
+        套装
+        <button id="btnNewCollection" class="mini">＋ 新建</button>
+      </div>
+      <nav id="collections" class="collections"></nav>
+      <div class="side-tip">Ctrl 点选多个资产，点「加入套装」；套装可整套拖进 Unity，或导出文件夹。</div>
+    </aside>
+
+    <section class="center">
+      <div class="toolbar">
+        <div class="tl-left">
+          <span id="countText" class="count">0 个资产</span>
+          <span id="filterHint" class="filter-hint"></span>
+        </div>
+        <div class="tl-right">
+          <div class="view-switch" id="viewSwitch" role="group" aria-label="显示方式">
+            <button type="button" data-view="comfortable" class="on" title="大图卡片">大图</button>
+            <button type="button" data-view="compact" title="紧凑卡片">紧凑</button>
+            <button type="button" data-view="list" title="列表">列表</button>
+          </div>
+          <button id="btnFav" class="chip" title="只看收藏">只看收藏</button>
+          <button id="btnSelMode" class="chip" title="多选模式">多选</button>
+          <span id="selCount" class="sel-count"></span>
+          <button id="btnAddToCollection" class="chip accent" title="把选中的资产加入套装">加入套装</button>
+        </div>
+      </div>
+
+      <div id="collectionBar" class="collection-bar hidden">
+        <div class="coll-main">
+          <div class="coll-name-row">
+            <span class="coll-kicker">套装</span>
+            <span id="collName" class="coll-name">—</span>
+          </div>
+          <div id="collDesc" class="coll-desc"></div>
+          <div id="collStats" class="coll-stats"></div>
+        </div>
+        <div class="coll-actions">
+          <button id="btnCollAdd" class="chip" title="把当前选中资产加入本套装">＋ 添加选中</button>
+          <button id="btnCollRemove" class="chip" title="把当前选中资产移出本套装">移出选中</button>
+          <button id="btnCollMoveUp" class="chip" title="在套装内前移">前移</button>
+          <button id="btnCollMoveDown" class="chip" title="在套装内后移">后移</button>
+          <button id="btnCollEdit" class="chip" title="编辑名称和说明">编辑</button>
+          <button id="btnCollExportDir" class="btn compact primary" title="按类目导出到文件夹，可改名为项目资源包">导出文件夹</button>
+          <button id="btnCollExport" class="btn compact" title="导出为 zip，带清单">导出 ZIP</button>
+        </div>
+        <div id="collGrip" class="coll-grip" draggable="true" title="按住拖到 Unity / 资源管理器，整套文件一起导入">⠿ 整套拖出</div>
+      </div>
+
+      <div id="grid" class="grid"><div id="gridInner" class="grid-inner"></div></div>
+      <div id="empty" class="empty">
+        <div class="empty-art"></div>
+        <p>素材库还是空的</p>
+        <p class="sub">把 .unitypackage / .zip / 文件夹直接拖进窗口，或者点右上角「添加资产」</p>
+      </div>
+    </section>
+
+    <aside id="detail" class="detail">
+      <div class="detail-empty" id="detailEmpty">
+        <p>选中一个资产查看详情</p>
+        <p class="sub">卡片可以直接拖到 Unity 的 Project 窗口或资源管理器</p>
+      </div>
+      <div class="detail-body hidden" id="detailBody">
+        <div class="preview" id="dPreview" title="点击查看大图"></div>
+        <div class="d-thumbs-row">
+          <div class="d-thumbs" id="dThumbs"></div>
+          <button id="dAddThumb" class="d-add-thumb" title="导入示意图">＋</button>
+        </div>
+        <div class="d-thumb-hint">示意图可点「＋」导入多张，或直接 <b>Ctrl+V</b> 粘贴截图（＋ 会盖到最前面，右键可移除）</div>
+
+        <input id="dName" class="d-name" type="text" spellcheck="false">
+        <div class="d-row">
+          <select id="dCategory" class="d-select">
+            <option value="base">素体</option>
+            <option value="cloth">服装</option>
+            <option value="makeup">妆容</option>
+            <option value="prop">道具</option>
+            <option value="material">着色球</option>
+            <option value="other">未分类</option>
+          </select>
+          <button id="dFav" class="d-fav" title="收藏">☆ 收藏</button>
+        </div>
+
+        <input id="dTags" class="d-tags" type="text" placeholder="标签，用逗号分隔，例如：JK, 日系, 夏季">
+
+        <div class="stats" id="dStats"></div>
+
+        <div class="meta" id="dMeta"></div>
+        <div class="d-coll-row" id="dCollections"></div>
+
+        <div class="d-notes-head">
+          <span>备注</span>
+          <button id="dBoothFetch" class="d-booth-fetch" type="button" title="读取备注里的 BOOTH 商品链接，抓取商品名和首图">从备注抓 BOOTH</button>
+        </div>
+        <textarea id="dNotes" class="d-notes" placeholder="备注：出处、作者、注意事项… 贴 BOOTH 商品链接会自动抓缩略图和商品名"></textarea>
+        <div class="d-booth-hint">只读取备注中的 booth.pm 商品链接；没有链接时自动跳过，不影响备注保存。</div>
+
+        <div class="d-actions">
+          <button id="dDrag" class="btn primary wide">拖我到 Unity / 资源管理器</button>
+          <div class="d-actions-row">
+            <button id="dReveal" class="btn ghost">打开原文件位置</button>
+            <button id="dDelete" class="btn danger">删除</button>
+          </div>
+        </div>
+        <div class="d-hint">提示：直接用鼠标把卡片拖出窗口，效果和这个按钮一样。</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="statusbar">
+    <span id="statusText">就绪</span>
+    <span id="rootText" class="root-text"></span>
+  </footer>
+
+  <div id="dropOverlay" class="drop-overlay">
+    <div class="drop-card">
+      <div class="drop-icon"></div>
+      <p>松开鼠标，加入素材库</p>
+      <span>支持 .unitypackage / .zip / 文件夹，可一次拖入多个</span>
+    </div>
+  </div>
+
+  <div id="setup" class="setup hidden">
+    <div class="setup-card">
+      <div class="setup-mark">AV</div>
+      <h2>先给素材库选一个存放位置</h2>
+      <p class="setup-desc">库里的原件副本、示意图、索引都放在这个目录。素材包普遍很大，建议选一个空间充足的盘（不是系统盘更好）。</p>
+      <div class="setup-path"><span>默认位置</span><b id="setupDefaultPath">…</b></div>
+      <div class="setup-actions">
+        <button id="setupDefault" class="btn primary">用这个默认位置</button>
+        <button id="setupPick" class="btn">选择其他文件夹…</button>
+      </div>
+      <div class="setup-note">之后想换：右上角「库 ▾ → 库位置…」，已有的资产不会自动搬过去。</div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox"><img alt=""></div>
+
+  <div id="progress" class="progress hidden">
+    <div class="progress-bar"><i id="progressFill"></i></div>
+    <div id="progressText" class="progress-text"></div>
+  </div>
+</div>
+<script src="virtual-grid.js"></script>
+<script src="renderer.js"></script>
+</body>
+</html>

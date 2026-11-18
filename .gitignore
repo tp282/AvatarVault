@@ -1,0 +1,46 @@
+# 依赖与构建产物
+node_modules/
+dist/
+release/
+build/*
+!build/.gitkeep
+build/apk/
+build/payload-clean/
+
+# 样例库与运行数据
+_demo-library/
+.avatarvault/
+index.json
+index.json.bak
+index.json.bak_*
+orig/
+prev/
+exports/
+thumb-cache/
+
+# 本地配置、密钥与日志
+.env
+.env.*
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+*.log
+debug.log
+
+# 分发产物
+*.zip
+*.apk
+*.exe
+*.dll
+*.node
+*.pak
+
+# 编辑器 / 系统临时文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp

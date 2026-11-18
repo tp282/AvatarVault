@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>AvatarVault</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="mark">AV</div>
+    <div class="titles">
+      <h1>AvatarVault</h1>
+      <small>手机素材库 · 导出给电脑</span></small>
+    </div>
+  </div>
+  <button id="btnExport" class="ghost">导出给电脑</button>
+</header>
+
+<div class="searchbar">
+  <input id="q" type="search" placeholder="搜索名称、标签、备注…">
+</div>
+
+<div class="chips" id="chips"></div>
+
+<main id="grid" class="grid"></main>
+<div id="empty" class="empty hidden">
+  <div class="empty-box">＋</div>
+  <p class="empty-title">手机库还是空的</p>
+  <p class="empty-sub">点右下角「＋」把 .unitypackage / .zip / 其他文件加进来</p>
+</div>
+
+<button id="btnAdd" class="fab">＋</button>
+
+<div id="sheet" class="sheet hidden">
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <p id="modalText"></p>
+    <div class="btnrow">
+      <button class="btn" id="modalCancel">取消</button>
+      <button class="btn primary" id="modalOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="viewer" class="viewer hidden"><img id="viewerImg" alt=""></div>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

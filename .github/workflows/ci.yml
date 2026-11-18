@@ -1,0 +1,47 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Data layer and backup compatibility
+        run: npm test
+
+      - name: Ingest / portable / bundle / stack
+        run: |
+          npm run test:ingest
+          npm run test:portable
+          npm run test:bundle
+          npm run test:stack
+
+      - name: Mobile import regression
+        run: npm run test:mobile-import
+
+      - name: BOOTH parser
+        run: node scripts/test-booth.js

@@ -1,0 +1,94 @@
+{
+  "name": "avatarvault",
+  "productName": "AvatarVault",
+  "version": "0.3.0",
+  "description": "Local-first VRChat mod asset library with native Unity drag-out. 本地优先的 VRChat 改模素材库。",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack:win": "node scripts/pack.js",
+    "pack:win-icon": "node scripts/pack.js --with-icon",
+    "pack:asar": "node scripts/pack.js --with-icon --asar",
+    "make:icon": "node scripts/make-ico.js && node scripts/make-assets.js",
+    "seed-demo": "node scripts/seed-demo.js ./_demo-library",
+    "test:ingest": "node scripts/test-ingest.js",
+    "test:portable": "node scripts/test-portable.js",
+    "test:mobile-import": "node scripts/test-mobile-import.js",
+    "test:bundle": "node scripts/test-bundle.js",
+    "test:stack": "node scripts/test-stacks.js",
+    "test:030": "node scripts/test-030.js",
+    "test": "npm run test:030"
+  },
+  "author": "AvatarVault contributors",
+  "license": "MIT",
+  "keywords": [
+    "vrchat",
+    "unity",
+    "unitypackage",
+    "asset-manager",
+    "asset-library",
+    "electron",
+    "local-first",
+    "modding",
+    "booth",
+    "avatar",
+    "ai-assisted"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.6",
+    "electron": "^32.2.6",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.avatarvault.app",
+    "productName": "AvatarVault",
+    "copyright": "AvatarVault",
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "lib/**/*",
+      "src/**/*",
+      "workers/**/*",
+      "assets/icon.png",
+      "assets/drag-icon.png",
+      "使用说明.txt",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false,
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AvatarVault",
+      "artifactName": "AvatarVault-Setup-${version}.exe",
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "language": "2052"
+    }
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}
